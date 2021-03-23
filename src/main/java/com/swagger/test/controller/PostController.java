@@ -1,8 +1,10 @@
 package com.swagger.test.controller;
 
+import com.swagger.test.domain.Comment;
 import com.swagger.test.domain.Post;
 import com.swagger.test.dto.PostRequest;
 import com.swagger.test.dto.PostResponse;
+import com.swagger.test.repository.CommentRepository;
 import com.swagger.test.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +20,12 @@ public class PostController {
 
     private final PostRepository postRepository;
 
+    private final CommentRepository commentRepository;
+
     @Autowired
-    public PostController(PostRepository postRepository) {
+    public PostController(PostRepository postRepository, CommentRepository commentRepository) {
         this.postRepository = postRepository;
+        this.commentRepository = commentRepository;
     }
 
     @GetMapping("/{postId}")
@@ -50,6 +55,11 @@ public class PostController {
     @DeleteMapping("/{postId}")
     public ResponseEntity<Void> delete(@PathVariable Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(IllegalArgumentException::new);
+        List<Comment> commentList = post.getCommentList();
+        for (Comment comment : commentList) {
+            commentRepository.delete(comment);
+        }
+        commentList.clear();
         postRepository.delete(post);
         return ResponseEntity.noContent().build();
     }

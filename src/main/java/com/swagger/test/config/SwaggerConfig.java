@@ -24,7 +24,7 @@ public class SwaggerConfig {
                 .select()
                 .apis(RequestHandlerSelectors.
                         basePackage("com.swagger.test.controller"))
-                .paths(PathSelectors.ant("/posts/**")).build();
+                .paths(PathSelectors.any()).build();
     }
 
     private ApiInfo apiInfo1() {

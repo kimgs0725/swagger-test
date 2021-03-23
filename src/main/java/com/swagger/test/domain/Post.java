@@ -1,14 +1,16 @@
 package com.swagger.test.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Post {
     @Id @GeneratedValue
     private Long id;
+
+    @OneToMany(mappedBy = "post")
+    private List<Comment> commentList = new ArrayList<>();
 
     @Column(nullable = false, length = 25)
     private String title;
@@ -28,6 +30,13 @@ public class Post {
         this.content = content;
     }
 
+    public void addComment(Comment comment) {
+        if (!this.commentList.contains(comment)) {
+            this.commentList.add(comment);
+            comment.setPost(this);
+        }
+    }
+
     public Long getId() {
         return id;
     }
@@ -38,5 +47,9 @@ public class Post {
 
     public String getContent() {
         return content;
+    }
+
+    public List<Comment> getCommentList() {
+        return commentList;
     }
 }

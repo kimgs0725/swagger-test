@@ -29,7 +29,7 @@ public class CommentController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CommentResponse>> findAll() {
+    public ResponseEntity<List<CommentResponse>> findAll(@PathVariable Long postId) {
         List<Comment> commentList = commentRepository.findAll();
         List<CommentResponse> collect = commentList.stream().map(CommentResponse::of).collect(Collectors.toList());
         return ResponseEntity.ok(collect);
